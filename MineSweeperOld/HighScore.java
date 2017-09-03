@@ -5,39 +5,50 @@
  */
 package minesweeper;
 
+import java.util.ArrayList;
+
 /**
  *
- * @author Shmuel
+ * @author samjays
  */
 public class HighScore implements Comparable<HighScore>
 {
 
+    /**
+     * @return the MAX_GAMES
+     */
+    public static int getMAX_GAMES()
+    {
+        return MAX_GAMES;
+    }
+
+    //instructor made this as an inner class in class HighScores
     private String level;
     private String name;
     private String score;
-    int levelNum;
 
-    private static final int MAX_GAMES = 5;
+    private static final int MAX_GAMES = 15;
 
     public HighScore(String level, String name, String score)
     {
         this.level = level;
         this.name = name;
         this.score = score;
-
-        if (level == "Easy")
-        {
-            levelNum = 2;
-        } else if (level == "Medium")
-        {
-            levelNum = 1;
-        } else if (level == "Hard")
-        {
-            levelNum = 0;
-        } else
-        {
-            levelNum = 2;
-        }
+//
+//        if (level == "Easy")
+//        {
+//            levelNum = 2;
+//        } else if (level == "Medium")
+//        {
+//            levelNum = 1;
+//        } else if (level == "Hard")
+//        {
+//            levelNum = 0;
+//        }
+//        else 
+//        {
+//            levels = 2;
+//        }
 
     }
 
@@ -73,35 +84,21 @@ public class HighScore implements Comparable<HighScore>
         this.score = score;
     }
 
-    /**
-     * @return the MAX_GAMES
-     */
-    public static int getMAX_GAMES()
-    {
-        return MAX_GAMES;
-    }
-
     @Override
+    //if you're just a comparable for highscores than you need to pass a highscore
+    //that's what the diamond <highscore> means that you're only a comparable 
+    //for highscores
     public int compareTo(HighScore hs)
     {
-        //they're looking for positive, negative or equal result
-
+              
 //        if (levelNum < hs.levelNum)
 //        {
-//            return -1;
+//            return 1;
 //        } else if (levelNum > hs.levelNum)
 //        {
-//            return 1;
-//        } else
-//        if()
-//            return 0;
-//        else if(level == "Medium")
 //            return -1;
-//        else if(level == hs.level)
-        if (this.levelNum != hs.levelNum)
-        {
-            return Integer.compare(this.levelNum, hs.levelNum);
-        } else
+//        } else
+
         {
             String sHS = "";
             for (int i = 0; i < hs.getScore().length(); i++)
@@ -129,19 +126,8 @@ public class HighScore implements Comparable<HighScore>
 
             return Integer.compare(Integer.parseInt(s), Integer.parseInt(sHS));
         }
-
-        //or
-        //return new Integer(this.score).compareTo(hs.score);
-        //or
-        //if(score < hs.score)
-        //return -1;
-        //else if(score > hs.score)
-        //return 1;
-        //else //if it's equal
-        //return 0;
-        //or
-        //return Integer.compare(score, hs.score);    
-    }
+      
+   }
 
     public String toString()
     {

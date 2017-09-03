@@ -9,13 +9,18 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.*;
+import java.util.Arrays;
+import java.util.Hashtable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.event.*;
+import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 /**
  *
- * @author Shmuel
+ * @author samjays
  */
 public class MineSweeper extends JFrame
 {
@@ -35,12 +40,11 @@ public class MineSweeper extends JFrame
 
     Timer time;
     boolean timeStarted = false;
-    //Thread timerThread = timer();
     JLabel timerLabel = new JLabel("", SwingConstants.CENTER);
 
     //to track when player wins
     int winCounter = 0;
-    static int mines = 76;
+    static int mines = 10;
 
     //used for keeping track of flags
     int minesCounter = mines;
@@ -48,11 +52,6 @@ public class MineSweeper extends JFrame
     //used so once mines are opened no clicking can take place
     int minesOpened;
 
-//    //int for timerLabel
-//    long milliSeconds;
-//    long seconds;
-//    long min;
-//    boolean notCalled = false;
     //for if hs were already read
     boolean hsRead = false;
 
@@ -66,13 +65,9 @@ public class MineSweeper extends JFrame
     //how many clicks in the game
     int clicks;
     HighScores hsc = new HighScores();
-//    HighScores hscEasy = new HighScores();
-//    HighScores hscMedium = new HighScores();
-//    HighScores hscHard = new HighScores();
-//    HighScores hscCustom = new HighScores();
 
     ImageIcon flagIcon = null;
-    URL imgURL = getClass().getClassLoader().getResource(("Resources/isFlag.png"));
+    URL imgURL = getClass().getClassLoader().getResource(("Resources/amFlag.png"));
 
     ImageIcon questionMarkIcon = null;
     URL imgURL1 = getClass().getClassLoader().getResource(("Resources/QuestionMark.png"));
@@ -88,45 +83,41 @@ public class MineSweeper extends JFrame
         int choice = JOptionPane.showOptionDialog(this, "Select Level", "Difficulty", JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null, choices, choices[0]);
 
-        if (choice == JOptionPane.YES_OPTION) //easy
+        if (choice == JOptionPane.YES_OPTION)
 
         {
             dispose();
             rows = 9;
             cols = 9;
-            cellSize = 45;
-            //cellSize = rows * cols / 2;
-            mines = 76;
+            cellSize = rows * cols / 2;
+            mines = 10;
             level = "Easy";
             new MineSweeper(rows, cols, mines, level).setVisible(true);
         }
-        //maybe do else if here
-        if (choice == JOptionPane.NO_OPTION) //medium
+        if (choice == JOptionPane.NO_OPTION)
 
         {
             dispose();
-            rows = 9;
-            cols = 9;
-            cellSize = 45;
-            //cellSize = rows * cols / 2;
-            mines = 77;
+            rows = 16;
+            cols = 16;
+            cellSize = rows * cols / 2;
+            mines = 40;
             level = "Medium";
             new MineSweeper(rows, cols, mines, level).setVisible(true);
         }
-        if (choice == JOptionPane.CANCEL_OPTION) //hard
+        if (choice == JOptionPane.CANCEL_OPTION)
 
         {
             dispose();
-            rows = 9;
-            cols = 9;
-            cellSize = 45;
-            //cellSize = rows * cols / 2;
-            mines = 78;
+            rows = 16;
+            cols = 30;
+            cellSize = rows * cols / 2;
+            mines = 99;
             level = "Hard";
             new MineSweeper(rows, cols, mines, level).setVisible(true);
 
         }
-        if (choice == 3) //custom
+        if (choice == 3)
 
         {
 
@@ -173,11 +164,9 @@ public class MineSweeper extends JFrame
             {
                 @Override
                 public void stateChanged(ChangeEvent e)
-                {
-
+                {                                                                         
                     mine.setMaximum((width.getValue() - 1) * (height.getValue() - 1));
-                    widthLabel.setText("" + width.getValue());
-
+                    widthLabel.setText("" + width.getValue());                  
                 }
             });
 
@@ -258,34 +247,11 @@ public class MineSweeper extends JFrame
 
         }
 
-        //for java timer
-        //notCalled = false;
     }
 
     public MineSweeper(int rows, int cols, int mines, String level)
     {
 
-//        time = new Timer(10, new ActionListener()
-//        {
-//            @Override
-//            public void actionPerformed(ActionEvent e)
-//            {
-//                if (milliSeconds < 100)
-//                {
-//                    milliSeconds++;
-//                }
-//                if (milliSeconds == 100)
-//                {
-//                    seconds++;
-//                    milliSeconds = 0;
-//                }
-//                if (seconds == 60)
-//                {
-//                    min++;
-//                    seconds = 0;
-//                }
-//            }
-//        });
         flagIcon = new ImageIcon(imgURL);
         questionMarkIcon = new ImageIcon(imgURL1);
         this.setTitle("Mine Sweeper");
@@ -295,7 +261,7 @@ public class MineSweeper extends JFrame
         JPanel mineCounter = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         mineCounter.setBackground(Color.white);
 
-        String disTime = String.format("%02d:%02d", minutes, seconds2);
+        String disTime = String.format("%02d:%02d ", minutes, seconds2);
         timerLabel.setText(disTime);
         timerLabel.setBackground(Color.black);
         timerLabel.setForeground(Color.white);
@@ -347,21 +313,15 @@ public class MineSweeper extends JFrame
                 //for timer thread
                 gameOver = true;
                 seconds2 = 0;
-//              min = 0;
 
+               
                 timerLabel.setText(disTime);
                 timeStarted = false;
-
-//                gameOver = true;
-//                time.stop();
+              
                 winCounter = 0;
                 minesCounter = 10;
                 minesOpened = 0;
-
-                //for java timer
-//                milliSeconds = 0;
-//                seconds = 0;
-//                min = 0;
+             
                 minesFlagged.setText("" + minesCounter);
 
                 for (int i = 0; i < gbArr.length; i++)
@@ -382,6 +342,7 @@ public class MineSweeper extends JFrame
                 setUpGame();
 
             }
+
         });
 
         quit.addActionListener(new ActionListener()
@@ -389,6 +350,7 @@ public class MineSweeper extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
+                //dispose();
                 System.exit(0);
             }
         });
@@ -413,10 +375,6 @@ public class MineSweeper extends JFrame
                     {
 
                         hsc.read();
-//                       hscEasy.read();
-//                       hscMedium.read();
-//                       hscHard.read();
-//                       hscCustom.read();
                         hsRead = true;
 
                     } catch (IOException ex)
@@ -425,7 +383,6 @@ public class MineSweeper extends JFrame
                                 .getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-
                 JOptionPane.showMessageDialog(MineSweeper.this, hsc.toString(), "High Scores", JOptionPane.PLAIN_MESSAGE);
             }
         });
@@ -447,6 +404,9 @@ public class MineSweeper extends JFrame
                 board.add(gb);
                 add(board, BorderLayout.CENTER);
 
+                //I used this to see the placement of each square
+                // String a = Integer.toString(i, j);
+                //gbArr[i][j].setText(i + ", " + j);
                 gb.addActionListener(new ActionListener()
                 {
                     @Override
@@ -459,17 +419,12 @@ public class MineSweeper extends JFrame
                         }
                         timeStarted = true;
 
-//                        if (timeStarted == false)
-//                        {
-//                            time.start();
-//                        }
-//                        timeStarted = true;
                         GameButton gb = (GameButton) e.getSource();
 
                         Integer firstIndex = (Integer) gb.getClientProperty("firstIndex");
                         Integer secondIndex = (Integer) gb.getClientProperty("secondIndex");
 
-                        ImageIcon imgURL = new ImageIcon(getClass().getClassLoader().getResource(("Resources/isFlag.png")));
+                        ImageIcon imgURL = new ImageIcon(getClass().getClassLoader().getResource(("Resources/amFlag.png")));
                         if (gb.getIcon() == flagIcon || gb.getIcon() == questionMarkIcon
                                 || gb.isUncovered() == true || winCounter == rows * cols - mines || gb.isIsMine() == true)
                         {
@@ -477,7 +432,6 @@ public class MineSweeper extends JFrame
                                     && winCounter != rows * cols - mines && gb.isIsMine() == true)
                             {
                                 gameOver = true;
-                                //time.stop();
 
                                 for (int i = 0; i < gbArr.length; i++)
                                 {
@@ -488,7 +442,7 @@ public class MineSweeper extends JFrame
                                         if (gbArr[i][j].isIsMine())
                                         {
                                             gbArr[i][j].uncover();
-                                            gbArr[i][j].setBackground(Color.red);
+				            gbArr[i][j].setBackground(Color.red);
                                             minesOpened++;
 
                                         }
@@ -509,11 +463,13 @@ public class MineSweeper extends JFrame
                         } else
                         {
                             uncoverCell(firstIndex, secondIndex, level);
-                        }
+                        }                         
                     }
+
                 });
                 gb.addMouseListener(new MouseAdapter()
                 {
+
                     @Override
                     public void mousePressed(MouseEvent e)
                     {
@@ -558,17 +514,17 @@ public class MineSweeper extends JFrame
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-//        if (level == "Hard")
-//        {
-//            setExtendedState(JFrame.MAXIMIZED_BOTH);
-//            //setUndecorated(true);
-//        } else
+        if (level == "Hard")
+        {
+            setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        } else
         {
             setSize(cols * cellSize, cols * cellSize);
         }
 
         setLocationRelativeTo(null);
-
+     
     }
 
     public void setUpGame()
@@ -588,7 +544,6 @@ public class MineSweeper extends JFrame
                 if (gbArr[mineJ][mineK].isIsMine() == false)
                 {
                     gbArr[mineJ][mineK].setIsMine(true);
-                    gbArr[mineJ][mineK].setText("B");
                     break;
                 }
 
@@ -607,13 +562,16 @@ public class MineSweeper extends JFrame
                     } else if (gbArr[mineJ + j][mineK + k].isIsMine() == false)
 
                     {
-
+                      
                         gbArr[mineJ + j][mineK + k].setNearbyMines(gbArr[mineJ + j][mineK + k].incrementNearbyMines());
-
+                     
                     }
+
                 }
             }
+
         }
+
     }
 
     public Thread timer()
@@ -625,6 +583,8 @@ public class MineSweeper extends JFrame
             {
                 gameOver = false;
 
+                //a way to stop a run method is have the run method come to an
+                //end
                 while (!gameOver)
                 {
 
@@ -633,18 +593,22 @@ public class MineSweeper extends JFrame
 
                         Thread.sleep(1000);
                         seconds2++;
-
+                   
                     } catch (InterruptedException ex)
                     {
 
                     }
-
+                    //you need swing utilities bec. multi threading is a real
+                    //art and you need it to be safe, a race condition
                     SwingUtilities.invokeLater(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-
+                           
+                            //zev's way. Like this you'll get seconds and minutes
+                            //min are /60 and what ever remains %60 is the leftover
+                            //seconds
                             String disTime = String.format("%02d:%02d ", seconds2 / 60, seconds2 % 60);
                             timerLabel.setText(disTime);
                         }
@@ -659,6 +623,8 @@ public class MineSweeper extends JFrame
     //passing through level so can access it for highscore
     public void uncoverCell(int r, int c, String level)
     {
+
+        //when you come back around you don't want to automatically uncover
 
         if (gbArr[r][c].isIsMine() == false && gbArr[r][c].getIcon() == null)
         {
@@ -687,7 +653,12 @@ public class MineSweeper extends JFrame
                 } else if (gbArr[r + i][c + j].isIsMine() == true || gbArr[r + i][c + j].isUncovered() == true || gbArr[r][c].getIcon() != null)
                 {
 
-                } else
+                } //this was not to check diagnals but the game does check
+                //                    else if (i + j == 2 || i + j == 0 || i + j == -2)
+                //                {
+                //
+                //                }
+                else
                 {
 
                     uncoverCell(r + i, c + j, level);
@@ -704,7 +675,7 @@ public class MineSweeper extends JFrame
         if (winCounter == (rows * cols) - mines)
         {
             gameOver = true;
-            //time.stop();
+
             JOptionPane.showMessageDialog(null, "You Won!");
 
             for (int i = 0; i < gbArr.length; i++)
@@ -718,42 +689,14 @@ public class MineSweeper extends JFrame
                         gbArr[i][j].setBackground(Color.green);
 
                     }
+
                 }
+
             }
             HighScore hs = new HighScore(level, " ", timerLabel.getText());
-//            if (null != level)
-//            {
-//                switch (level)
-//                {
-//                    case "Easy":
-//                        hscEasy.add(hs);
-//                        break;
-//                    case "Medium":
-//                        hscMedium.add(hs);
-//                        break;
-//                    case "Hard":
-//                        hscHard.add(hs);
-//                        break;
-//                    default:
-//                        hscCustom.add(hs);
-//                        break;
-//                }
-//            }
-
-            if (!hsRead)
-            {
-                try
-                {
-                    hsc.read();
-                    hsRead = true;
-                } catch (IOException ex)
-                {
-                    Logger.getLogger(MineSweeper.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
             hsc.add(hs);
+            hsRead = true;
             JOptionPane.showMessageDialog(null, hsc.toString());
-
         }
     }
 
@@ -761,5 +704,4 @@ public class MineSweeper extends JFrame
     {
         new MineSweeper(9, 9, 10, "Easy").setVisible(true);
     }
-
 }

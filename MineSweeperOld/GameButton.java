@@ -11,7 +11,7 @@ import javax.swing.*;
 
 /**
  *
- * @author Shmuel
+ * @author samjays
  */
 public class GameButton extends JButton
 {
@@ -23,6 +23,7 @@ public class GameButton extends JButton
     public void uncover()
     {
         setBackground(Color.WHITE);
+
         setUncovered(true);
 
         if (isMine == true)
@@ -40,7 +41,7 @@ public class GameButton extends JButton
 
             String nb = Integer.toString(nearbyMines);
             setText(nb);
-            setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+            setFont(new Font("Comic Sans MS", Font.BOLD , 15));
             switch (nearbyMines)
             {
                 case 1:
@@ -70,9 +71,12 @@ public class GameButton extends JButton
                     break;
             }
             this.setOpaque(true);
-        }
-    }
+            
+                
 
+            }
+        }
+       
     public boolean isIsMine()
     {
         return isMine;
@@ -103,6 +107,7 @@ public class GameButton extends JButton
         {
             this.nearbyMines = nearbyMines;
         }
+
     }
 
     public int incrementNearbyMines()
